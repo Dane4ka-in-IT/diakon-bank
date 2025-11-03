@@ -3,15 +3,12 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: diakon-bank-db
+    container_name: bank-db-postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=diakon
-      - POSTGRES_PASSWORD=wWdSht5igiRqaG_l
-      - POSTGRES_DB=diakonbank
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=bankdb
     volumes:
-      - ./db-data:/var/lib/postgresql/data
-
-volumes:
-  postgres-data:
+      - ./pg-data:/var/lib/postgresql/data
