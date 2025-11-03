@@ -1,14 +1,41 @@
 package com.diakonbank.bankapiservice.dto.response;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
 @Data
 public class BankTransactionDTO {
-    @JsonProperty("AccountId") private String accountId;
-    @JsonProperty("TransactionId") private String transactionId;
-    @JsonProperty("Amount") private AmountDTO amount;
-    @JsonProperty("CreditDebitIndicator") private String creditDebitIndicator;
-    @JsonProperty("Status") private String status;
-    @JsonProperty("BookingDateTime") private String bookingDateTime;
-    @JsonProperty("ValueDateTime") private String valueDateTime;
-    @JsonProperty("TransactionInformation") private String transactionInformation;
+
+    @JsonProperty("accountId")
+    private String accountId;
+
+    @JsonProperty("transactionId")
+    private String transactionId;
+
+    @JsonProperty("amount")
+    private AmountDTO amount;
+
+    @JsonProperty("creditDebitIndicator")
+    private String creditDebitIndicator;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("bookingDateTime")
+    private String bookingDateTime;
+
+    @JsonProperty("valueDateTime")
+    private String valueDateTime;
+
+    @JsonProperty("transactionInformation")
+    private String transactionInformation;
+
+    @JsonProperty("bankTransactionCode")
+    private BankTransactionCodeDTO bankTransactionCode;
+
+    @Data
+    public static class BankTransactionCodeDTO {
+        @JsonProperty("code")
+        private String code;
+    }
 }

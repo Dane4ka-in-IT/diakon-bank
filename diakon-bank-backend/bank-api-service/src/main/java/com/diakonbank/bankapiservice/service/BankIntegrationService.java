@@ -7,13 +7,10 @@ import com.diakonbank.bankapiservice.entity.Transaction;
 import com.diakonbank.bankapiservice.exception.BankIntegrationException;
 import com.diakonbank.bankapiservice.repository.AccountRepository;
 import com.diakonbank.bankapiservice.repository.TransactionRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,13 +33,24 @@ public class BankIntegrationService {
         log.info("Starting data synchronization for user {}", userId);
         try {
             String accessToken = bankApiClient.getAccessToken().block();
-            String consentId = bankApiClient.getConsent(accessToken).block();
-            List<BankAcountDTO> bankAccounts = bankApiClient.getAccounts(accessToken, consentId).block();
+            log.info("Obtained access_token.");
 
-            if (bankAccounts == null) {
-                log.warn("Bank accounts list is null, aborting sync for user {}", userId);
+            String consentId = bankApiClient.getConsent(accessToken).block();
+            log.info("Obtained consent_id: {}.", consentId);
+
+            ConsentDetailsResponse consentDetails = bankApiClient.getConsentDetails(consentId, accessToken).block();
+            if (consentDetails == null || consentDetails.getData() == null ||
+                    consentDetails.getData().getPermissions() == null || consentDetails.getData().getPermissions().isEmpty()) {
+                throw new BankIntegrationException("CRITICAL: Consent created, but NO PERMISSIONS were granted!");
+            }
+            log.info("SUCCESS! Permissions granted for consent {}: {}", consentId, consentDetails.getData().getPermissions());
+
+            List<BankAcountDTO> bankAccounts = bankApiClient.getAccounts(accessToken, consentId).block();
+            if (bankAccounts == null || bankAccounts.isEmpty()) {
+                log.warn("Bank accounts list is null or empty for user {}. This is unexpected with valid consent.", userId);
                 return;
             }
+
             log.info("Fetched {} accounts for user {}", bankAccounts.size(), userId);
             for (BankAcountDTO bankAccountDto : bankAccounts) {
                 Account account = processAccount(bankAccountDto, userId);
@@ -58,7 +66,6 @@ public class BankIntegrationService {
     private Account processAccount(BankAcountDTO bankAccountDto, Long userId) {
         Account account = accountRepository.findByExternalAccountId(bankAccountDto.getAccountId())
                 .orElse(new Account());
-
         account.setUserId(userId);
         account.setExternalAccountId(bankAccountDto.getAccountId());
         account.setNickname(bankAccountDto.getNickname());
@@ -66,21 +73,19 @@ public class BankIntegrationService {
         account.setAccountSubType(bankAccountDto.getAccountSubType());
         account.setCurrency(bankAccountDto.getCurrency());
         account.setStatus(bankAccountDto.getStatus());
-        Optional.ofNullable(bankAccountDto.getOpeningDate()).ifPresent(date -> account.setOpeningDate(LocalDate.parse(date)));
+        Optional.ofNullable(bankAccountDto.getOpeningDate()).ifPresent(dateStr -> {
+            if (dateStr != null && !dateStr.isBlank()) account.setOpeningDate(LocalDate.parse(dateStr));
+        });
         Optional.ofNullable(bankAccountDto.getAccount()).flatMap(list -> list.stream().findFirst()).ifPresent(acc -> account.setAccountNumber(acc.getIdentification()));
-
         return accountRepository.save(account);
     }
 
     private void updateAccountBalance(Account account, String accessToken, String consentId) {
-        log.debug("Updating balance for account {}", account.getExternalAccountId());
         BankBalanceResponseDTO balanceResponse = bankApiClient.getAccountBalances(account.getExternalAccountId(), accessToken, consentId).block();
-
         if (balanceResponse == null || balanceResponse.getData() == null || balanceResponse.getData().getBalance() == null) {
             log.warn("No balance data found for account {}", account.getExternalAccountId());
             return;
         }
-
         balanceResponse.getData().getBalance().stream()
                 .filter(balance -> "InterimAvailable".equals(balance.getType()))
                 .findFirst()
@@ -93,7 +98,6 @@ public class BankIntegrationService {
     }
 
     private void syncTransactionsForAccount(Account account, String accessToken, String consentId) {
-        log.debug("Syncing transactions for account {}", account.getExternalAccountId());
         String fromDateTime = LocalDateTime.now().minusYears(1).format(DateTimeFormatter.ISO_DATE_TIME);
         String toDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         int currentPage = 1;
@@ -102,15 +106,11 @@ public class BankIntegrationService {
 
         while(hasMorePages) {
             BankTransactionResponseDTO transactionResponse = bankApiClient.getTransactionsForAccount(account.getExternalAccountId(), accessToken, consentId, fromDateTime, toDateTime, currentPage).block();
-
             if (transactionResponse == null || transactionResponse.getData() == null || transactionResponse.getData().getTransaction() == null) {
-                log.warn("No transaction data on page {} for account {}. Aborting sync.", currentPage, account.getExternalAccountId());
                 break;
             }
-
             List<BankTransactionDTO> transactions = transactionResponse.getData().getTransaction();
             log.info("Fetched {} transactions for account {} on page {}", transactions.size(), account.getExternalAccountId(), currentPage);
-
             for (BankTransactionDTO txnDto : transactions) {
                 if (transactionRepository.findByExternalTransactionId(txnDto.getTransactionId()).isPresent()) {
                     continue;
@@ -119,21 +119,19 @@ public class BankIntegrationService {
                 transaction.setUserId(account.getUserId());
                 transaction.setAccount(account);
                 transaction.setExternalTransactionId(txnDto.getTransactionId());
-                Optional.ofNullable(txnDto.getBookingDateTime()).ifPresent(dt -> transaction.setBookingDateTime(ZonedDateTime.parse(dt).toLocalDateTime()));
-
+                Optional.ofNullable(txnDto.getBookingDateTime()).ifPresent(dtStr -> {
+                    if(dtStr != null && !dtStr.isBlank()) transaction.setBookingDateTime(ZonedDateTime.parse(dtStr).toLocalDateTime());
+                });
                 Optional.ofNullable(txnDto.getAmount()).ifPresent(amount -> {
                     transaction.setAmount(new BigDecimal(amount.getAmount()));
                     transaction.setCurrency(amount.getCurrency());
                 });
-
                 transaction.setCreditDebitIndicator(txnDto.getCreditDebitIndicator());
                 transaction.setTransactionInformation(txnDto.getTransactionInformation());
                 transaction.setStatus(txnDto.getStatus());
-
                 transactionRepository.save(transaction);
                 totalNewTransactionsCount++;
             }
-
             if (transactionResponse.getMeta() != null && transactionResponse.getMeta().getTotalPages() != null) {
                 hasMorePages = currentPage < transactionResponse.getMeta().getTotalPages();
             } else {

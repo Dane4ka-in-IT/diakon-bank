@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class MetaDTO {
-    @JsonProperty("totalPages")
-    private Integer totalPages;
+public class Links {
+    @JsonProperty("self")
+    private String self;
 }

@@ -5,5 +5,5 @@ import java.util.List;
 
 @Data
 public class DataDTO {
-    @JsonProperty("Transaction") private List<BankTransactionDTO> transaction;
+    @JsonProperty("transaction") private List<BankTransactionDTO> transaction;
 }

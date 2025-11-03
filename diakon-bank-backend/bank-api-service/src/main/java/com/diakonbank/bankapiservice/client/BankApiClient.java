@@ -57,7 +57,7 @@ public class BankApiClient {
                         .queryParam("client_secret", clientSecret)
                         .build())
                 .retrieve()
-                .bodyToMono(AccessTokenResponse.class) // <-- ИЗМЕНЕНИЕ №1
+                .bodyToMono(AccessTokenResponse.class)
                 .map(AccessTokenResponse::getAccessToken)
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
@@ -71,17 +71,25 @@ public class BankApiClient {
                 "requesting_bank", clientId,
                 "requesting_bank_name", "Diakon App"
         );
-
         return bankClient.post()
                 .uri("/account-consents/request")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("X-Requesting-Bank", clientId)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(ConsentResponse.class) // <-- ИЗМЕНЕНИЕ №2
+                .bodyToMono(ConsentResponse.class)
                 .map(ConsentResponse::getConsentId)
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
+    }
+
+    public Mono<ConsentDetailsResponse> getConsentDetails(String consentId, String accessToken) {
+        return this.bankClient.get()
+                .uri("/account-consents/{consentId}", consentId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(ConsentDetailsResponse.class)
+                .doOnError(this::logApiError);
     }
 
     public Mono<List<BankAcountDTO>> getAccounts(String accessToken, String consentId) {
@@ -95,7 +103,7 @@ public class BankApiClient {
                     h.set("X-Requesting-Bank", clientId);
                 })
                 .retrieve()
-                .bodyToMono(AccountListResponse.class) // <-- ИЗМЕНЕНИЕ №3
+                .bodyToMono(AccountListResponse.class)
                 .map(response -> Optional.ofNullable(response.getData())
                         .map(AccountListResponse.AccountData::getAccount)
                         .orElse(Collections.emptyList()))
@@ -112,7 +120,7 @@ public class BankApiClient {
                     h.set("X-Requesting-Bank", clientId);
                 })
                 .retrieve()
-                .bodyToMono(BankBalanceResponseDTO.class) // <-- ИЗМЕНЕНИЕ №4
+                .bodyToMono(BankBalanceResponseDTO.class)
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
@@ -131,7 +139,7 @@ public class BankApiClient {
                     h.set("X-Requesting-Bank", clientId);
                 })
                 .retrieve()
-                .bodyToMono(BankTransactionResponseDTO.class) // <-- ИЗМЕНЕНИЕ №5
+                .bodyToMono(BankTransactionResponseDTO.class)
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
