@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/diakon-bank.iml" filepath="$PROJECT_DIR$/.idea/diakon-bank.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diakon-bank-backend/financial-pulse-service/financial-pulse-service.iml" filepath="$PROJECT_DIR$/diakon-bank-backend/financial-pulse-service/financial-pulse-service.iml" />
     </modules>
   </component>
 </project>

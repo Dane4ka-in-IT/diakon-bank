@@ -1,19 +1,16 @@
-package com.diakonbank.commondto;
+package com.diakonbank.financialpulse.service.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "accounts")
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AccountDto {
+public class Account {
+    @Id
     private Long id;
     private Long ownerUserId;
     private String bankName;

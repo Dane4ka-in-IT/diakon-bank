@@ -6,6 +6,7 @@
         <set>
           <option value="X-Consent-Id" />
           <option value="X-Requesting-Bank" />
+          <option value="X-User-Id" />
         </set>
       </option>
     </inspection_tool>

@@ -5,10 +5,10 @@ services:
     image: postgres:15-alpine
     container_name: bank-db-postgres
     ports:
-      - "5432:5432"
+      - "5343:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=bankdb
     volumes:
-      - ./pg-data:/var/lib/postgresql/data
+      - C:/Users/ITdiakon/dev/Java4ka/diakon-bank/pg-data:/var/lib/postgresql/data
