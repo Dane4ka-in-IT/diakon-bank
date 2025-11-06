@@ -50,14 +50,6 @@ public class BankApiController {
         return ResponseEntity.ok(transactionDtos);
     }
 
-    @PostMapping("/internal/sync/{userId}")
-    public ResponseEntity<Void> sync(@PathVariable Long userId) {
-        log.info("Starting manual data synchronization for user ID: {}", userId);
-        bankIntegrationService.syncUserData(userId);
-        log.info("Manual data synchronization for user ID: {} completed.", userId);
-        return ResponseEntity.ok().build();
-    }
-
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<ProblemDetail> handleHttpClientErrorException(HttpClientErrorException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(ex.getStatusCode(), ex.getResponseBodyAsString());

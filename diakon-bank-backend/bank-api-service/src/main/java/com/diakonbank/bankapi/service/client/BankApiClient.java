@@ -22,15 +22,6 @@ import java.util.Optional;
 @Slf4j
 public class BankApiClient {
 
-    @Value("${bank.client.id}")
-    private String clientId;
-
-    @Value("${bank.client.secret}")
-    private String clientSecret;
-
-    @Value("${bank.client.suffix}")
-    private String clientSuffix;
-
     private final WebClient.Builder webClientBuilder;
     private WebClient bankClient;
 
@@ -46,15 +37,20 @@ public class BankApiClient {
                 .build();
     }
 
-    private String getSuffixedClientId() {
-        return clientId + "-" + clientSuffix;
+    private String getClientId(String login) {
+        int lastDash = login.lastIndexOf('-');
+        if (lastDash != -1) {
+            return login.substring(0, lastDash);
+        }
+        return login;
     }
 
-    public Mono<String> getAccessToken() {
+    public Mono<String> getAccessToken(String login, String password) {
+        String clientId = getClientId(login);
         return bankClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/auth/bank-token")
                         .queryParam("client_id", clientId)
-                        .queryParam("client_secret", clientSecret)
+                        .queryParam("client_secret", password)
                         .build())
                 .retrieve()
                 .bodyToMono(AccessTokenResponse.class)
@@ -63,9 +59,10 @@ public class BankApiClient {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
 
-    public Mono<String> getConsent(String accessToken) {
+    public Mono<String> getConsent(String accessToken, String login) {
+        String clientId = getClientId(login);
         Map<String, Object> body = Map.of(
-                "client_id", getSuffixedClientId(),
+                "client_id", login,
                 "permissions", List.of("ReadAccountsDetail", "ReadBalances", "ReadTransactionsDetail"),
                 "reason", "Data aggregation for Diakon app",
                 "requesting_bank", clientId,
@@ -92,10 +89,11 @@ public class BankApiClient {
                 .doOnError(this::logApiError);
     }
 
-    public Mono<List<BankAcountDTO>> getAccounts(String accessToken, String consentId) {
+    public Mono<List<BankAcountDTO>> getAccounts(String accessToken, String consentId, String login) {
+        String clientId = getClientId(login);
         return bankClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/accounts")
-                        .queryParam("client_id", getSuffixedClientId())
+                        .queryParam("client_id", login)
                         .build())
                 .headers(h -> {
                     h.setBearerAuth(accessToken);
@@ -111,7 +109,8 @@ public class BankApiClient {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
 
-    public Mono<BankBalanceResponseDTO> getAccountBalances(String externalAccountId, String accessToken, String consentId) {
+    public Mono<BankBalanceResponseDTO> getAccountBalances(String externalAccountId, String accessToken, String consentId, String login) {
+        String clientId = getClientId(login);
         return bankClient.get()
                 .uri("/accounts/{accountId}/balances", externalAccountId)
                 .headers(h -> {
@@ -125,7 +124,8 @@ public class BankApiClient {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
 
-    public Mono<BankTransactionResponseDTO> getTransactionsForAccount(String externalAccountId, String accessToken, String consentId, String fromDateTime, String toDateTime, int pageToFetch) {
+    public Mono<BankTransactionResponseDTO> getTransactionsForAccount(String externalAccountId, String accessToken, String consentId, String fromDateTime, String toDateTime, int pageToFetch, String login) {
+        String clientId = getClientId(login);
         return bankClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/accounts/{accountId}/transactions")
