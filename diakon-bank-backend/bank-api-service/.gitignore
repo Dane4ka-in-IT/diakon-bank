@@ -33,3 +33,5 @@ build/
 .vscode/
 # Sensitive configuration files
 application-local.properties
+application.properties
+application-*.properties

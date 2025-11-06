@@ -1,4 +1,4 @@
-package com.diakonbank.bankapiservice;
+package com.diakonbank.bankapi.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
