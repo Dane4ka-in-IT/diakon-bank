@@ -20,6 +20,7 @@
         <module>bank-api-service</module>
         <module>security-service</module>
         <module>common-dto</module>
+        <module>financial-pulse-service</module>
     </modules>
 
     <properties>

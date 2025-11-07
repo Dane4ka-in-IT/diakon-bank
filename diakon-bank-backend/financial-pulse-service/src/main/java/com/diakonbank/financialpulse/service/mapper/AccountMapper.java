@@ -21,7 +21,7 @@ public final class AccountMapper {
                 .status(entity.getStatus())
                 .openingDate(entity.getOpeningDate())
                 .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt()) // <-- ДОБАВЛЕНО
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 }

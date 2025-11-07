@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class TransactionDto {
     private Long id;
     private Long accountId;
-    private Long ownerUserId; // <-- ДОБАВЛЕНО
+    private Long ownerUserId;
     private String externalTransactionId;
     private LocalDateTime bookingDateTime;
     private BigDecimal amount;

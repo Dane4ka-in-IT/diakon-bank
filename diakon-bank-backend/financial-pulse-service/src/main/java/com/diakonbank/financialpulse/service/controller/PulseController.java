@@ -1,16 +1,13 @@
 package com.diakonbank.financialpulse.service.controller;
 
-import com.diakonbank.commondto.AccountDto;
-import com.diakonbank.commondto.TransactionDto;
+import com.diakonbank.commondto.*;
 import com.diakonbank.financialpulse.service.service.PulseQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/pulse")
@@ -18,6 +15,12 @@ import java.util.List;
 public class PulseController {
 
     private final PulseQueryService pulseQueryService;
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardResponseDto> getDashboard(@RequestHeader("X-User-Id") Long userId) {
+        DashboardResponseDto dashboardData = pulseQueryService.getDashboardData(userId);
+        return ResponseEntity.ok(dashboardData);
+    }
 
     @GetMapping("/accounts")
     public ResponseEntity<List<AccountDto>> getAccounts(@RequestHeader("X-User-Id") Long userId) {
@@ -29,5 +32,23 @@ public class PulseController {
     public ResponseEntity<List<TransactionDto>> getTransactions(@RequestHeader("X-User-Id") Long userId) {
         List<TransactionDto> transactions = pulseQueryService.getTransactionsByOwnerId(userId);
         return ResponseEntity.ok(transactions);
+    }
+
+    @PostMapping("/ai/chat")
+    public ResponseEntity<DiakonHelpResponseDto> askDiakonHelp(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody Map<String, String> requestBody) {
+        String question = requestBody.get("question");
+        DiakonHelpResponseDto response = pulseQueryService.askDiakonHelp(userId, question);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/ai/leaks")
+    public ResponseEntity<LeaksResponseDto> findLeaks(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(name = "months", defaultValue = "3") int months) {
+
+        LeaksResponseDto leaks = pulseQueryService.analyzeForLeaks(userId, months);
+        return ResponseEntity.ok(leaks);
     }
 }
