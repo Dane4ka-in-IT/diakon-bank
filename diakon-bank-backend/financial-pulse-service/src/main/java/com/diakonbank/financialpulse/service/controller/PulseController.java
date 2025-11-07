@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/pulse")
@@ -47,8 +49,16 @@ public class PulseController {
     public ResponseEntity<LeaksResponseDto> findLeaks(
             @RequestHeader("X-User-Id") Long userId,
             @RequestParam(name = "months", defaultValue = "3") int months) {
-
         LeaksResponseDto leaks = pulseQueryService.analyzeForLeaks(userId, months);
         return ResponseEntity.ok(leaks);
+    }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<AnalyticsResponseDto> getAnalytics(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(name = "fromDate") Optional<LocalDate> fromDate,
+            @RequestParam(name = "toDate") Optional<LocalDate> toDate) {
+        AnalyticsResponseDto analyticsData = pulseQueryService.getAnalytics(userId, fromDate, toDate);
+        return ResponseEntity.ok(analyticsData);
     }
 }
