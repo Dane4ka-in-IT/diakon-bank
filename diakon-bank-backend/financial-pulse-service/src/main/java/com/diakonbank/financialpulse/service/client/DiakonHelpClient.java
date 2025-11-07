@@ -1,8 +1,8 @@
 package com.diakonbank.financialpulse.service.client;
 
-import com.diakonbank.commondto.DiakonHelpRequestDto;
-import com.diakonbank.commondto.DiakonHelpResponseDto;
-import com.diakonbank.commondto.DiakonHelpLeaksRequestDto;
+import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpRequestDto;
+import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpResponseDto;
+import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpLeaksRequestDto;
 import com.diakonbank.commondto.LeaksResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

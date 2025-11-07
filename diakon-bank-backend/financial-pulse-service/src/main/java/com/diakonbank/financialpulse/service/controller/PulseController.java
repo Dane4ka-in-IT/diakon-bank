@@ -1,6 +1,7 @@
 package com.diakonbank.financialpulse.service.controller;
 
 import com.diakonbank.commondto.*;
+import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpResponseDto;
 import com.diakonbank.financialpulse.service.service.PulseQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

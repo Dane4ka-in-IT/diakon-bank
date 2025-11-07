@@ -1,4 +1,4 @@
-package com.diakonbank.commondto;
+package com.diakonbank.financialpulse.service.dto.ai;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

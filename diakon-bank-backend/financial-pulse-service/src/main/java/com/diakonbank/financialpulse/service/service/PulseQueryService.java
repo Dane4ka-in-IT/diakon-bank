@@ -2,6 +2,8 @@ package com.diakonbank.financialpulse.service.service;
 
 import com.diakonbank.commondto.*;
 import com.diakonbank.financialpulse.service.client.DiakonHelpClient;
+import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpRequestDto;
+import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpResponseDto;
 import com.diakonbank.financialpulse.service.entity.Account;
 import com.diakonbank.financialpulse.service.entity.Transaction;
 import com.diakonbank.financialpulse.service.mapper.AccountMapper;
