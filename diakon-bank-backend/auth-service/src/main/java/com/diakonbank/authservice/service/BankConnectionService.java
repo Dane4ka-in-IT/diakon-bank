@@ -36,7 +36,8 @@ public class BankConnectionService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        bankApiInternalClient.validateCredentials(connectBankRequest.getBankLogin(), connectBankRequest.getBankPassword())
+        String bankName = connectBankRequest.getBank().name();
+        bankApiInternalClient.validateCredentials(connectBankRequest.getBankLogin(), connectBankRequest.getBankPassword(), bankName)
                 .filter(isValid -> isValid)
                 .doOnSuccess(isValid -> {
                     if (isValid) {
@@ -44,13 +45,13 @@ public class BankConnectionService {
                         bankConnection.setUser(user);
                         bankConnection.setBankLogin(connectBankRequest.getBankLogin());
                         bankConnection.setEncryptedBankPassword(passwordEncoder.encode(connectBankRequest.getBankPassword()));
-                        bankConnection.setBankIdentifier("vbank");
+                        bankConnection.setBankIdentifier(connectBankRequest.getBank().name().toLowerCase());
                         bankConnection.setStatus("ACTIVE");
                         bankConnection.setCreatedAt(Instant.now());
                         bankConnection.setUpdatedAt(Instant.now());
                         bankConnectionRepository.save(bankConnection);
 
-                        bankApiInternalClient.syncUser(connectBankRequest.getBankLogin(), connectBankRequest.getBankPassword(), user.getId())
+                        bankApiInternalClient.syncUser(connectBankRequest.getBankLogin(), connectBankRequest.getBankPassword(), user.getId(), bankName)
                                 .subscribeOn(Schedulers.boundedElastic())
                                 .subscribe();
                     }

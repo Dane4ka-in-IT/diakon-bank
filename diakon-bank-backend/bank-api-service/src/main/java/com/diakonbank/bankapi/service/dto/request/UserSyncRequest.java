@@ -4,6 +4,7 @@ public class UserSyncRequest {
     private String login;
     private String password;
     private Long ownerUserId;
+    private String bank;
 
     // Getters and setters
     public String getLogin() {
@@ -28,5 +29,13 @@ public class UserSyncRequest {
 
     public void setOwnerUserId(Long ownerUserId) {
         this.ownerUserId = ownerUserId;
+    }
+
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
     }
 } 

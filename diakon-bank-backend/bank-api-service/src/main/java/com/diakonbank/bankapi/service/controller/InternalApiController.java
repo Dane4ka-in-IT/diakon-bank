@@ -22,14 +22,14 @@ public class InternalApiController {
 
     @PostMapping("/validate-credentials")
     public Mono<ResponseEntity<Boolean>> validateCredentials(@RequestBody CredentialValidationRequest request) {
-        return bankApiClient.getAccessToken(request.getLogin(), request.getPassword())
+        return bankApiClient.getAccessToken(request.getLogin(), request.getPassword(), request.getBank())
                 .map(token -> ResponseEntity.ok(true))
                 .onErrorResume(e -> Mono.just(ResponseEntity.ok(false)));
     }
 
     @PostMapping("/sync-user")
     public ResponseEntity<Void> syncUser(@RequestBody UserSyncRequest request) {
-        bankIntegrationService.syncUserData(request.getLogin(), request.getPassword(), request.getOwnerUserId());
+        bankIntegrationService.syncUserData(request.getLogin(), request.getPassword(), request.getOwnerUserId(), request.getBank());
         return ResponseEntity.accepted().build();
     }
 } 

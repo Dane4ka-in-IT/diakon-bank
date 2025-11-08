@@ -31,23 +31,23 @@ public class BankIntegrationService {
     private final BankApiClient bankApiClient;
 
     @Transactional
-    public void syncUserData(String login, String password, Long userId) {
+    public void syncUserData(String login, String password, Long userId, String bank) {
         log.info("Starting data synchronization for user {}", userId);
         try {
-            String accessToken = bankApiClient.getAccessToken(login, password).block();
+            String accessToken = bankApiClient.getAccessToken(login, password, bank).block();
             log.info("Obtained access_token.");
 
-            String consentId = bankApiClient.getConsent(accessToken, login).block();
+            String consentId = bankApiClient.getConsent(accessToken, login, bank).block();
             log.info("Obtained consent_id: {}.", consentId);
 
-            ConsentDetailsResponse consentDetails = bankApiClient.getConsentDetails(consentId, accessToken).block();
+            ConsentDetailsResponse consentDetails = bankApiClient.getConsentDetails(consentId, accessToken, bank).block();
             if (consentDetails == null || consentDetails.getData() == null ||
                     consentDetails.getData().getPermissions() == null || consentDetails.getData().getPermissions().isEmpty()) {
                 throw new BankIntegrationException("CRITICAL: Consent created, but NO PERMISSIONS were granted!");
             }
             log.info("SUCCESS! Permissions granted for consent {}: {}", consentId, consentDetails.getData().getPermissions());
 
-            List<BankAcountDTO> bankAccounts = bankApiClient.getAccounts(accessToken, consentId, login).block();
+            List<BankAcountDTO> bankAccounts = bankApiClient.getAccounts(accessToken, consentId, login, bank).block();
             if (bankAccounts == null || bankAccounts.isEmpty()) {
                 log.warn("Bank accounts list is null or empty for user {}. This is unexpected with valid consent.", userId);
                 return;
@@ -55,9 +55,9 @@ public class BankIntegrationService {
 
             log.info("Fetched {} accounts for user {}", bankAccounts.size(), userId);
             for (BankAcountDTO bankAccountDto : bankAccounts) {
-                Account account = processAccount(bankAccountDto, userId);
-                updateAccountBalance(account, accessToken, consentId, login);
-                syncTransactionsForAccount(account, accessToken, consentId, login);
+                Account account = processAccount(bankAccountDto, userId, bank);
+                updateAccountBalance(account, accessToken, consentId, login, bank);
+                syncTransactionsForAccount(account, accessToken, consentId, login, bank);
             }
         } catch (Exception e) {
             log.error("Error during data synchronization for user {}", userId, e);
@@ -65,12 +65,12 @@ public class BankIntegrationService {
         }
     }
 
-    private Account processAccount(BankAcountDTO bankAccountDto, Long currentOwnerUserId) {
+    private Account processAccount(BankAcountDTO bankAccountDto, Long currentOwnerUserId, String bank) {
         Account account = accountRepository.findByExternalAccountId(bankAccountDto.getAccountId())
                 .orElse(new Account());
 
         account.setOwnerUserId(currentOwnerUserId);
-        account.setBankName("VBank");
+        account.setBankName(bank);
         account.setUpdatedAt(Instant.now());
 
         account.setExternalAccountId(bankAccountDto.getAccountId());
@@ -87,8 +87,8 @@ public class BankIntegrationService {
         return accountRepository.save(account);
     }
 
-    private void updateAccountBalance(Account account, String accessToken, String consentId, String login) {
-        BankBalanceResponseDTO balanceResponse = bankApiClient.getAccountBalances(account.getExternalAccountId(), accessToken, consentId, login).block();
+    private void updateAccountBalance(Account account, String accessToken, String consentId, String login, String bank) {
+        BankBalanceResponseDTO balanceResponse = bankApiClient.getAccountBalances(account.getExternalAccountId(), accessToken, consentId, login, bank).block();
         if (balanceResponse == null || balanceResponse.getData() == null || balanceResponse.getData().getBalance() == null) {
             log.warn("No balance data found for account {}", account.getExternalAccountId());
             return;
@@ -105,7 +105,7 @@ public class BankIntegrationService {
                 });
     }
 
-    private void syncTransactionsForAccount(Account account, String accessToken, String consentId, String login) {
+    private void syncTransactionsForAccount(Account account, String accessToken, String consentId, String login, String bank) {
         String fromDateTime = LocalDateTime.now().minusYears(1).format(DateTimeFormatter.ISO_DATE_TIME);
         String toDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         int currentPage = 1;
@@ -113,7 +113,7 @@ public class BankIntegrationService {
         boolean hasMorePages = true;
 
         while(hasMorePages) {
-            BankTransactionResponseDTO transactionResponse = bankApiClient.getTransactionsForAccount(account.getExternalAccountId(), accessToken, consentId, fromDateTime, toDateTime, currentPage, login).block();
+            BankTransactionResponseDTO transactionResponse = bankApiClient.getTransactionsForAccount(account.getExternalAccountId(), accessToken, consentId, fromDateTime, toDateTime, currentPage, login, bank).block();
             if (transactionResponse == null || transactionResponse.getData() == null || transactionResponse.getData().getTransaction() == null) {
                 break;
             }
