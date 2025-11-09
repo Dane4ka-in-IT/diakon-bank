@@ -1,11 +1,8 @@
 package com.diakonbank.financialpulse.service.mapper;
-
 import com.diakonbank.commondto.AccountDto;
 import com.diakonbank.financialpulse.service.entity.Account;
-
 public final class AccountMapper {
     private AccountMapper() {}
-
     public static AccountDto toDto(Account entity) {
         return AccountDto.builder()
                 .id(entity.getId())

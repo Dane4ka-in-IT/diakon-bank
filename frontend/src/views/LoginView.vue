@@ -18,36 +18,30 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from '@/services/authService';
-
 const username = ref('');
 const password = ref('');
 const router = useRouter();
-
 const handleLogin = async () => {
   try {
     await authService.login(username.value, password.value);
     router.push({ name: 'dashboard' });
   } catch (error) {
     console.error('Login failed:', error);
-    // Here you could show an error message to the user
   }
 };
 </script>
-
 <style scoped>
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1; /* This makes it fill the flex container from the layout */
+  flex-grow: 1;
   width: 100%;
 }
-
 .login-box {
   background-color: #343a40;
   padding: 40px;
@@ -58,17 +52,14 @@ const handleLogin = async () => {
   max-width: 400px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
-
 h1 {
   margin-bottom: 30px;
   font-size: 28px;
   font-weight: 300;
 }
-
 .input-group {
   margin-bottom: 20px;
 }
-
 input {
   width: 100%;
   padding: 15px;
@@ -79,17 +70,14 @@ input {
   box-sizing: border-box;
   font-size: 16px;
 }
-
 input::placeholder {
   color: #adb5bd;
 }
-
 input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
-
 .login-button {
   width: 100%;
   padding: 15px;
@@ -103,28 +91,22 @@ input:focus {
   margin-bottom: 25px;
   transition: background-color 0.2s;
 }
-
 .login-button:hover {
   background-color: #0056b3;
 }
-
 .links {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
 }
-
 .links a {
   color: #007bff;
   text-decoration: none;
 }
-
 .links a:hover {
   color: #00aaff;
   text-decoration: underline;
 }
-
-/* Light Theme Adjustments */
 .main-layout:not(.dark-theme) .login-box {
   background-color: #ffffff;
   border-color: #dee2e6;
@@ -144,4 +126,4 @@ input:focus {
 .main-layout:not(.dark-theme) .login-box .links a {
   color: #007bff;
 }
-</style> 
+</style>

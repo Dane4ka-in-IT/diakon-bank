@@ -8,26 +8,21 @@
     </button>
   </div>
 </template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
-
 const props = defineProps<{
   income: number;
   expenses: number;
 }>();
-
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
     currency: 'RUB',
   }).format(value || 0);
 };
-
 const formattedIncome = computed(() => `+ ${formatCurrency(props.income)}`);
 const formattedExpenses = computed(() => `- ${formatCurrency(props.expenses)}`);
 </script>
-
 <style scoped>
 .transaction-buttons {
   display: flex;
@@ -35,7 +30,6 @@ const formattedExpenses = computed(() => `- ${formatCurrency(props.expenses)}`);
   gap: 15px;
   flex-grow: 1;
 }
-
 .transaction-button {
   background-color: #3a3a4a;
   border: 1px solid #555;
@@ -50,11 +44,9 @@ const formattedExpenses = computed(() => `- ${formatCurrency(props.expenses)}`);
   text-align: left;
   width: 100%;
 }
-
 .transaction-button:hover {
   background-color: #4a4a5a;
 }
-
 .arrow {
   display: inline-block;
   border-radius: 50%;
@@ -64,14 +56,12 @@ const formattedExpenses = computed(() => `- ${formatCurrency(props.expenses)}`);
   text-align: center;
   font-weight: bold;
 }
-
 .spend .arrow {
   background-color: #ff4d4d;
   transform: rotate(-45deg);
 }
-
 .receive .arrow {
   background-color: #4dff4d;
-  transform: rotate(135deg); /* Pointing down-left, as in the image */
+  transform: rotate(135deg);
 }
-</style> 
+</style>

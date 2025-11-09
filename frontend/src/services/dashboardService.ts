@@ -1,7 +1,6 @@
 import { pulseApi } from './api';
 import { useDashboardStore } from '@/stores/dashboard';
 import type { DashboardData } from '@/stores/dashboard';
-
 export const dashboardService = {
   async fetchDashboardData(): Promise<void> {
     const store = useDashboardStore();
@@ -17,4 +16,4 @@ export const dashboardService = {
       store.setLoading(false);
     }
   },
-}; 
+};

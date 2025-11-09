@@ -6,28 +6,20 @@ import java.util.List;
 public class BankAcountDTO {
     @JsonProperty("accountId")
     private String accountId;
-
     @JsonProperty("currency")
     private String currency;
-
     @JsonProperty("accountType")
     private String accountType;
-
     @JsonProperty("accountSubType")
     private String accountSubType;
-
     @JsonProperty("description")
     private String description;
-
     @JsonProperty("nickname")
     private String nickname;
-
     @JsonProperty("openingDate")
     private String openingDate;
-
     @JsonProperty("status")
     private String status;
-
     @JsonProperty("account")
     private List<IdentificationDTO> account;
 }

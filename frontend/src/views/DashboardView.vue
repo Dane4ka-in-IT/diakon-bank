@@ -6,9 +6,9 @@
       <TotalBalance :balance="dashboardStore.totalBalance" />
     </div>
     <div class="top-right-cluster">
-      <TransactionButtons 
-        :income="dashboardStore.totalIncome" 
-        :expenses="dashboardStore.totalExpenses" 
+      <TransactionButtons
+        :income="dashboardStore.totalIncome"
+        :expenses="dashboardStore.totalExpenses"
       />
       <FinancialPulse />
     </div>
@@ -20,7 +20,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useDashboardStore } from '@/stores/dashboard';
@@ -30,14 +29,11 @@ import TransactionButtons from '@/components/dashboard/TransactionButtons.vue';
 import MyAccounts from '@/components/dashboard/MyAccounts.vue';
 import FinancialPulse from '@/components/dashboard/FinancialPulse.vue';
 import RecentTransactions from '@/components/dashboard/RecentTransactions.vue';
-
 const dashboardStore = useDashboardStore();
-
 onMounted(() => {
   bankService.fetchBankData();
 });
 </script>
-
 <style scoped>
 .dashboard-grid {
   display: grid;
@@ -47,19 +43,16 @@ onMounted(() => {
   width: 100%;
   align-items: flex-start;
 }
-
 .card {
   background-color: #2c2f48;
   border-radius: 12px;
   padding: 24px;
   color: #e0e0e0;
 }
-
 .total-balance {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
 }
-
 .top-right-cluster {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
@@ -67,17 +60,14 @@ onMounted(() => {
   flex-direction: column;
   gap: 20px;
 }
-
 .my-accounts {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
 }
-
 .recent-transactions {
   grid-column: 2 / 3;
   grid-row: 2 / 3;
 }
-
 .loading-spinner, .error-message {
   display: flex;
   justify-content: center;
@@ -85,4 +75,4 @@ onMounted(() => {
   height: 80vh;
   font-size: 2em;
 }
-</style> 
+</style>

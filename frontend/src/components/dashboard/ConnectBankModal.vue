@@ -1,4 +1,4 @@
- <template>
+<template>
   <div v-if="show" class="modal-overlay" @click.self="close">
     <div class="modal-content">
       <button class="close-button" @click="close">&times;</button>
@@ -31,28 +31,22 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref } from 'vue';
 import { authService } from '@/services/authService';
-
 const props = defineProps<{
   show: boolean;
 }>();
-
 const emit = defineEmits(['close']);
-
 const bankLogin = ref('');
 const bankPassword = ref('');
 const bank = ref('');
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 const isSuccess = ref(false);
-
 const close = () => {
   emit('close');
 };
-
 const handleSubmit = async () => {
   isLoading.value = true;
   error.value = null;
@@ -66,7 +60,7 @@ const handleSubmit = async () => {
     isSuccess.value = true;
     setTimeout(() => {
       close();
-      window.location.reload(); // Refresh the page on success
+      window.location.reload();
     }, 5000);
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Не удалось подключить банк. Пожалуйста, проверьте свои данные.';
@@ -74,7 +68,6 @@ const handleSubmit = async () => {
   }
 };
 </script>
-
 <style scoped>
 .modal-overlay {
   position: fixed;

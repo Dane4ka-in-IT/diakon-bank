@@ -16,35 +16,28 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import type { BankTransaction } from '@/stores/dashboard';
-
 const props = defineProps<{
   transactions: BankTransaction[];
 }>();
-
 const isExpanded = ref(false);
-
 const visibleTransactions = computed(() => {
   if (isExpanded.value) {
     return props.transactions;
   }
   return props.transactions.slice(0, 5);
 });
-
 const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value;
 };
-
 const formatCurrency = (value: number, currency: string) => {
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
     currency: currency || 'RUB',
   }).format(value || 0);
 };
-
 const getIconForTransaction = (description: string | null) => {
   const lowerCaseDesc = description?.toLowerCase() || '';
   if (lowerCaseDesc.includes('магнит') || lowerCaseDesc.includes('продукты')) return '🛒';
@@ -52,10 +45,9 @@ const getIconForTransaction = (description: string | null) => {
   if (lowerCaseDesc.includes('wildberries') || lowerCaseDesc.includes('одежда')) return '🛍️';
   if (lowerCaseDesc.includes('cofix') || lowerCaseDesc.includes('кофе')) return '☕';
   if (lowerCaseDesc.includes('перевод')) return '💸';
-  return '💳'; // Default icon
+  return '💳';
 };
 </script>
-
 <style scoped>
 .recent-transactions-card {
   background-color: #3a3a4a;
@@ -63,56 +55,47 @@ const getIconForTransaction = (description: string | null) => {
   padding: 20px;
   color: white;
 }
-
 .card-title {
   margin: 0 0 15px 0;
   font-weight: normal;
   border-bottom: 1px solid #555;
   padding-bottom: 10px;
 }
-
 .transactions-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Adds space between items */
+  gap: 10px;
 }
-
 .transaction-item {
   display: flex;
   align-items: center;
-  padding: 12px 5px; /* More vertical padding */
+  padding: 12px 5px;
   border-bottom: 1px solid #555;
 }
-
 .transaction-icon {
   font-size: 24px;
-  width: 50px; /* A bit more space for the icon */
+  width: 50px;
   text-align: center;
   margin-right: 15px;
 }
-
 .transaction-description {
   flex-grow: 1;
 }
-
 .transaction-amount {
   font-weight: bold;
 }
-
 .no-transactions {
   padding: 20px 0;
   text-align: center;
   color: #888;
 }
-
 .transactions-list.is-expanded {
-  max-height: 400px; /* Or any height you prefer */
+  max-height: 400px;
   overflow-y: auto;
 }
-
 .show-more-btn {
   background: none;
   border: 1px solid #007bff;
@@ -124,28 +107,22 @@ const getIconForTransaction = (description: string | null) => {
   cursor: pointer;
   font-weight: bold;
 }
-
 .show-more-btn:hover {
   background-color: #007bff;
   color: white;
 }
-
-/* Custom scrollbar styles */
 .transactions-list::-webkit-scrollbar {
   width: 8px;
 }
-
 .transactions-list::-webkit-scrollbar-track {
   background: #2c2c3a;
   border-radius: 10px;
 }
-
 .transactions-list::-webkit-scrollbar-thumb {
   background: #555;
   border-radius: 10px;
 }
-
 .transactions-list::-webkit-scrollbar-thumb:hover {
   background: #777;
 }
-</style> 
+</style>

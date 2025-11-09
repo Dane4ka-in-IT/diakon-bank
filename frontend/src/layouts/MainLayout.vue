@@ -12,18 +12,15 @@
           <button @click="handleLogout" class="logout-button">Выйти</button>
         </div>
         <button v-else @click="goToLogin" class="login-button">Войти</button>
-        
         <button @click="toggleTheme" class="theme-switcher">
           <span v-if="isDarkMode">🌙</span>
           <span v-else>☀️</span>
         </button>
       </div>
     </header>
-
     <main class="app-content">
       <router-view />
     </main>
-
     <footer class="app-footer">
       <div class="footer-links">
         <router-link to="/tariffs">Тарифы</router-link>
@@ -36,34 +33,26 @@
     </footer>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-
-const isDarkMode = ref(true); // Default to dark theme
+const isDarkMode = ref(true);
 const router = useRouter();
 const authStore = useAuthStore();
-
 const user = computed(() => authStore.user);
 const isLoggedIn = computed(() => !!authStore.token);
-
 const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value;
-  // You can also save this preference to localStorage
 };
-
 const handleLogout = () => {
   authStore.logout();
-  window.location.href = '/login'; // Force a full refresh to clear all state
+  window.location.href = '/login';
 };
-
 const goToLogin = () => {
   router.push({ name: 'login' });
 }
 </script>
-
 <style scoped>
 .main-layout {
   display: flex;
@@ -71,10 +60,8 @@ const goToLogin = () => {
   min-height: 100vh;
   transition: background-color 0.3s, color 0.3s;
 }
-
-/* Light Theme */
 .main-layout:not(.dark-theme) {
-  background-color: #f0f8ff; /* Light blue background */
+  background-color: #f0f8ff;
   color: #333;
 }
 .main-layout:not(.dark-theme) .app-header,
@@ -88,15 +75,13 @@ const goToLogin = () => {
 .main-layout:not(.dark-theme) .logout-button {
   background-color: #dc3545;
 }
-
-/* Dark Theme */
 .dark-theme {
-  background-color: #1a1a2e; /* Dark navy background */
+  background-color: #1a1a2e;
   color: #e0e0e0;
 }
 .dark-theme .app-header,
 .dark-theme .app-footer {
-  background-color: #0f3460; /* Darker blue for header/footer */
+  background-color: #0f3460;
   color: white;
 }
 .dark-theme .logo {
@@ -108,8 +93,6 @@ const goToLogin = () => {
 .dark-theme .login-button {
   background-color: #007bff;
 }
-
-
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -117,29 +100,24 @@ const goToLogin = () => {
   padding: 10px 30px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
 .logo {
   font-size: 24px;
   font-weight: bold;
 }
-
 .logo span {
   font-weight: normal;
   color: #a0c4ff;
 }
-
 .header-right {
   display: flex;
   align-items: center;
   gap: 20px;
 }
-
 .user-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .username-link {
   color: white;
   text-decoration: none;
@@ -150,7 +128,6 @@ const goToLogin = () => {
 .username-link:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
-
 .icon-button, .theme-switcher, .logout-button, .login-button {
   background: none;
   border: none;
@@ -159,43 +136,35 @@ const goToLogin = () => {
   font-size: 20px;
   padding: 5px;
 }
-
 .logout-button, .login-button {
   font-size: 14px;
   padding: 8px 12px;
   border-radius: 5px;
   color: white;
 }
-
-
 .app-content {
   flex: 1;
   padding: 20px;
-  display: flex; /* This allows the child to grow to full height */
+  display: flex;
 }
-
 .app-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
 }
-
 .footer-links {
   display: flex;
   gap: 30px;
 }
-
 .footer-links a {
   color: white;
   text-decoration: none;
 }
-
 .footer-links a:hover {
   text-decoration: underline;
 }
-
 .copyright {
   font-size: 14px;
 }
-</style> 
+</style>

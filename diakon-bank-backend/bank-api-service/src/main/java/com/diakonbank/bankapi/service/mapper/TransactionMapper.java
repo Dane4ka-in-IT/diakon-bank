@@ -1,17 +1,12 @@
 package com.diakonbank.bankapi.service.mapper;
-
 import com.diakonbank.bankapi.service.entity.Transaction;
 import com.diakonbank.commondto.TransactionDto;
-
 public final class TransactionMapper {
-
     private TransactionMapper() {}
-
     public static TransactionDto toDto(Transaction entity) {
         if (entity == null) {
             return null;
         }
-
         return TransactionDto.builder()
                 .id(entity.getId())
                 .accountId(entity.getAccount() != null ? entity.getAccount().getId() : null)

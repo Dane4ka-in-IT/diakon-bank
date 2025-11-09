@@ -1,5 +1,4 @@
 package com.diakonbank.bankapi.service.client;
-
 import com.diakonbank.bankapi.service.dto.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,23 +10,18 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import jakarta.annotation.PostConstruct;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 @Component
 @Slf4j
 public class BankApiClient {
-
     private final WebClient.Builder webClientBuilder;
-
     public BankApiClient(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
     }
-
     private String getClientId(String login) {
         int lastDash = login.lastIndexOf('-');
         if (lastDash != -1) {
@@ -35,7 +29,6 @@ public class BankApiClient {
         }
         return login;
     }
-
     private WebClient getClientForBank(String bank) {
         String baseUrl = String.format("https://%s.open.bankingapi.ru", bank.toLowerCase());
         return webClientBuilder
@@ -43,7 +36,6 @@ public class BankApiClient {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
-
     public Mono<String> getAccessToken(String login, String password, String bank) {
         String clientId = getClientId(login);
         log.info("Requesting access token for clientId: {}", clientId);
@@ -58,7 +50,6 @@ public class BankApiClient {
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
-
     public Mono<String> getConsent(String accessToken, String login, String bank) {
         String clientId = getClientId(login);
         Map<String, Object> body = Map.of(
@@ -79,7 +70,6 @@ public class BankApiClient {
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
-
     public Mono<ConsentDetailsResponse> getConsentDetails(String consentId, String accessToken, String bank) {
         return getClientForBank(bank).get()
                 .uri("/account-consents/{consentId}", consentId)
@@ -88,7 +78,6 @@ public class BankApiClient {
                 .bodyToMono(ConsentDetailsResponse.class)
                 .doOnError(this::logApiError);
     }
-
     public Mono<List<BankAcountDTO>> getAccounts(String accessToken, String consentId, String login, String bank) {
         String clientId = getClientId(login);
         return getClientForBank(bank).get()
@@ -108,7 +97,6 @@ public class BankApiClient {
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
-
     public Mono<BankBalanceResponseDTO> getAccountBalances(String externalAccountId, String accessToken, String consentId, String login, String bank) {
         String clientId = getClientId(login);
         return getClientForBank(bank).get()
@@ -123,7 +111,6 @@ public class BankApiClient {
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
-
     public Mono<BankTransactionResponseDTO> getTransactionsForAccount(String externalAccountId, String accessToken, String consentId, String fromDateTime, String toDateTime, int pageToFetch, String login, String bank) {
         String clientId = getClientId(login);
         return getClientForBank(bank).get()
@@ -143,7 +130,6 @@ public class BankApiClient {
                 .doOnError(this::logApiError)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)));
     }
-
     private void logApiError(Throwable e) {
         if (e instanceof WebClientResponseException ex) {
             log.error("API Error: {} \nResponse Body: {}", ex.getMessage(), ex.getResponseBodyAsString());

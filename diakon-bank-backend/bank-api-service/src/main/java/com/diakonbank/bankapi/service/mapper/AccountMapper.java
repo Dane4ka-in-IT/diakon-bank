@@ -1,17 +1,12 @@
 package com.diakonbank.bankapi.service.mapper;
-
 import com.diakonbank.bankapi.service.entity.Account;
 import com.diakonbank.commondto.AccountDto;
-
 public final class AccountMapper {
-
     private AccountMapper() {}
-
     public static AccountDto toDto(Account entity) {
         if (entity == null) {
             return null;
         }
-
         return AccountDto.builder()
                 .id(entity.getId())
                 .ownerUserId(entity.getOwnerUserId())

@@ -1,5 +1,4 @@
 package com.diakonbank.financialpulse.service.client;
-
 import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpRequestDto;
 import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpResponseDto;
 import com.diakonbank.financialpulse.service.dto.ai.DiakonHelpLeaksRequestDto;
@@ -13,17 +12,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class DiakonHelpClient {
-
     private final WebClient.Builder webClientBuilder;
-
     @Value("${ai.gateway.url}")
     private String aiGatewayUrl;
-
     public Mono<DiakonHelpResponseDto> getAnalysis(DiakonHelpRequestDto request) {
         WebClient client = webClientBuilder.build();
         return client.post()
@@ -33,13 +28,10 @@ public class DiakonHelpClient {
                 .retrieve()
                 .bodyToMono(DiakonHelpResponseDto.class);
     }
-
     public Mono<LeaksResponseDto> findLeaks(String transactionsJson) {
         WebClient client = webClientBuilder.build();
         String leaksUrl = aiGatewayUrl.replace("/chat", "/leaks");
-
         DiakonHelpLeaksRequestDto requestBodyDto = new DiakonHelpLeaksRequestDto(transactionsJson);
-
         return client.post()
                 .uri(leaksUrl)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

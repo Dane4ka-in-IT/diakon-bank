@@ -5,7 +5,6 @@
       <button class="back-button" @click="goBack">← Назад</button>
       <h2>Финансовый пульс</h2>
     </div>
-
     <div class="period-selector">
       <label for="from-date">Период</label>
       <div class="date-inputs">
@@ -20,7 +19,6 @@
       </div>
       <button class="calculate-btn">Рассчитать</button>
     </div>
-
     <div class="charts-container">
       <div class="chart-wrapper">
         <h3>Расходы</h3>
@@ -35,7 +33,6 @@
         </div>
       </div>
     </div>
-
     <div class="summary-boxes">
       <div class="summary-box">
         <h4>Расходы</h4>
@@ -50,40 +47,31 @@
         <p>{{ formatCurrency(computedIncome - computedExpenses) }}</p>
       </div>
     </div>
-
     <div class="actions">
       <button class="leaks-btn">Поиск финансовых утечек 👑</button>
     </div>
   </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { Doughnut } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js';
 import { useDashboardStore } from '@/stores/dashboard';
-
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
-
 const dashboardStore = useDashboardStore();
-
 const router = useRouter();
-
 const goBack = () => {
   router.push({ name: 'dashboard' });
 };
-
 const isSalary = (transaction: any): boolean => {
   const category = (transaction.transactionInformation || '').toLowerCase();
   return category.includes('зарплата') || category.includes('salary') || category.includes('доход');
 };
-
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0 }).format(value);
 };
-
 const processChartData = (transactions: any[], filterPredicate: (t: any) => boolean) => {
     const filtered = transactions.filter(filterPredicate);
     const categories = filtered.reduce((acc, t) => {
@@ -92,19 +80,14 @@ const processChartData = (transactions: any[], filterPredicate: (t: any) => bool
         acc[category] = (acc[category] || 0) + amount;
         return acc;
     }, {} as Record<string, number>);
-
     const sortedCategories = Object.entries(categories).sort(([, a], [, b]) => b - a);
-    
     const topN = 10;
     const mainCategories = sortedCategories.slice(0, topN);
     const otherCategories = sortedCategories.slice(topN);
-
     const chartData = Object.fromEntries(mainCategories);
-
     if (otherCategories.length > 0) {
         chartData['Другое'] = otherCategories.reduce((acc, [, amount]) => acc + amount, 0);
     }
-
     return {
         labels: Object.keys(chartData),
         datasets: [
@@ -115,27 +98,22 @@ const processChartData = (transactions: any[], filterPredicate: (t: any) => bool
         ],
     };
 };
-
 const expensesData = computed(() => {
     return processChartData(dashboardStore.transactions, t => !isSalary(t));
 });
-
 const incomeData = computed(() => {
     return processChartData(dashboardStore.transactions, t => isSalary(t));
 });
-
 const computedExpenses = computed(() => {
     return dashboardStore.transactions
         .filter(t => !isSalary(t))
         .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 });
-
 const computedIncome = computed(() => {
     return dashboardStore.transactions
         .filter(t => isSalary(t))
         .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 });
-
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -143,17 +121,16 @@ const chartOptions = {
     legend: {
       position: 'right' as const,
       labels: {
-        color: '#ffffff', // Set legend text to white
+        color: '#ffffff',
       },
     },
     title: {
       display: true,
-      color: '#ffffff', // Set title text to white
+      color: '#ffffff',
     },
   },
 };
 </script>
-
 <style scoped>
 .financial-pulse-container {
     width: 100%;
@@ -278,4 +255,4 @@ const chartOptions = {
   cursor: pointer;
   font-size: 1rem;
 }
-</style> 
+</style>

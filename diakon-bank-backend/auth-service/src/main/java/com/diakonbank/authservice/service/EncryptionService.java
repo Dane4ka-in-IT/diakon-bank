@@ -1,23 +1,17 @@
 package com.diakonbank.authservice.service;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
 @Service
 public class EncryptionService {
-
     private static final String ALGORITHM = "AES";
     private final SecretKeySpec secretKeySpec;
-
     public EncryptionService(@Value("${encryption.secret}") String secret) {
         this.secretKeySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), ALGORITHM);
     }
-
     public String encrypt(String strToEncrypt) {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -27,7 +21,6 @@ public class EncryptionService {
             throw new RuntimeException("Error while encrypting: " + e.toString());
         }
     }
-
     public String decrypt(String strToDecrypt) {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -37,4 +30,4 @@ public class EncryptionService {
             throw new RuntimeException("Error while decrypting: " + e.toString());
         }
     }
-} 
+}

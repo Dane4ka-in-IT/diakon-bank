@@ -7,7 +7,6 @@ import DashboardView from '../views/DashboardView.vue'
 import TariffsView from '../views/TariffsView.vue'
 import FinancialPulseView from '../views/FinancialPulseView.vue'
 import { useAuthStore } from '@/stores/auth'
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -15,7 +14,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
-      // meta: { requiresAuth: true } // This is now handled below
     },
     {
       path: '/dashboard',
@@ -51,12 +49,9 @@ const router = createRouter({
     }
   ]
 })
-
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = !!authStore.token
-
-  // Handle root path redirection
   if (to.name === 'home') {
     if (isAuthenticated) {
       return next({ name: 'dashboard' })
@@ -64,7 +59,6 @@ router.beforeEach((to, from, next) => {
       return next({ name: 'about' })
     }
   }
-
   if (to.meta.requiresAuth && !isAuthenticated) {
     next({ name: 'login' })
   } else if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
@@ -73,5 +67,4 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-
 export default router

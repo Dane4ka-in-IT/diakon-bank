@@ -5,10 +5,8 @@ import lombok.Data;
 public class BankTransactionResponseDTO {
     @JsonProperty("data")
     private DataDTO data;
-
     @JsonProperty("links")
     private Links links;
-
     @JsonProperty("meta")
     private MetaDTO meta;
 }

@@ -9,13 +9,10 @@ public class BankBalanceDTO {
     public static class BalanceItem {
         @JsonProperty("accountId")
         private String accountId;
-
         @JsonProperty("amount")
         private AmountDTO amount;
-
         @JsonProperty("creditDebitIndicator")
         private String creditDebitIndicator;
-
         @JsonProperty("type")
         private String type;
     }

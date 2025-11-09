@@ -3,11 +3,8 @@
     Финансовый пульс
   </router-link>
 </template>
-
 <script setup lang="ts">
-// This button now navigates to the dedicated analytics page.
 </script>
-
 <style scoped>
 .financial-pulse-button {
   background-color: #007bff;
@@ -24,10 +21,9 @@
   box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
   transition: all 0.2s ease-in-out;
 }
-
 .financial-pulse-button:hover {
   background-color: #0056b3;
   box-shadow: 0 6px 15px rgba(0, 123, 255, 0.5);
   transform: translateY(-2px);
 }
-</style> 
+</style>

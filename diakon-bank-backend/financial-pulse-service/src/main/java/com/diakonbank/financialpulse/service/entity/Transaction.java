@@ -1,11 +1,9 @@
 package com.diakonbank.financialpulse.service.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "transactions")
 @Data
