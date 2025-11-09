@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Файлы с настройками, содержащие пароли и локальные URL
+application.properties
+application-*.properties

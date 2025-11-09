@@ -5,8 +5,6 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/diakon-bank-backend/pom.xml" />
-        <option value="$PROJECT_DIR$/diakon-bank-backend/auth-service/pom.xml" />
-        <option value="$PROJECT_DIR$/diakon-bank-backend/security-service/pom.xml" />
       </list>
     </option>
   </component>
