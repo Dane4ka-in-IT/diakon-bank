@@ -87,4 +87,40 @@ curl -X GET http://192.168.1.13:8083/api/v1/pulse/accounts \
 ```bash
 curl -X GET http://192.168.1.13:8083/api/v1/pulse/transactions \
 -H "X-User-Id: 1"
+```
+
+### 3. Get dashboard from Pulse
+
+```bash
+curl -X GET http://192.168.1.13:8083/api/v1/pulse/dashboard \
+-H "X-User-Id: 1"
+```
+
+### 4. Get analytics from Pulse
+
+This endpoint accepts two optional parameters `fromDate` and `toDate` with the `YYYY-MM-DD` format.
+
+```bash
+curl -X GET http://192.168.1.13:8083/api/v1/pulse/analytics?fromDate=2024-01-01&toDate=2024-01-31 \
+-H "X-User-Id: 1"
+```
+
+### 5. Ask DiakonHelp AI
+
+```bash
+curl -X POST http://192.168.1.13:8083/api/v1/pulse/ai/chat \
+-H "Content-Type: application/json" \
+-H "X-User-Id: 1" \
+-d '{
+    "question": "What are my largest expenses this month?"
+}'
+```
+
+### 6. Find leaks
+
+This endpoint accepts one optional parameter `months` to specify a period for analysis (the default is 3 months).
+
+```bash
+curl -X POST http://192.168.1.13:8083/api/v1/pulse/ai/leaks?months=3 \
+-H "X-User-Id: 1"
 ``` 
