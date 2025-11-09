@@ -9,9 +9,9 @@
         <div v-if="isLoggedIn" class="user-info">
           <router-link to="/dashboard" class="username-link">{{ user?.username }}</router-link>
           <button class="icon-button">🔔</button>
-          <button @click="handleLogout" class="logout-button">Logout</button>
+          <button @click="handleLogout" class="logout-button">Выйти</button>
         </div>
-        <button v-else @click="goToLogin" class="login-button">Login</button>
+        <button v-else @click="goToLogin" class="login-button">Войти</button>
         
         <button @click="toggleTheme" class="theme-switcher">
           <span v-if="isDarkMode">🌙</span>

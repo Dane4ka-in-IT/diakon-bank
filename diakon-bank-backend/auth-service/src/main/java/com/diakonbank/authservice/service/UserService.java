@@ -20,6 +20,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
     public User registerNewUser(RegistrationRequest registrationRequest) {
         if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
             throw new RuntimeException("User already exists with username: " + registrationRequest.getUsername());

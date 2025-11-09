@@ -10,7 +10,7 @@ public class BankApiInternalClient {
     private final WebClient bankApiClient;
 
     public BankApiInternalClient(WebClient.Builder webClientBuilder) {
-        this.bankApiClient = webClientBuilder.baseUrl("http://localhost:6666/internal").build();
+        this.bankApiClient = webClientBuilder.baseUrl("http://localhost:8082/internal").build();
     }
 
     public Mono<Boolean> validateCredentials(String login, String password, String bank) {

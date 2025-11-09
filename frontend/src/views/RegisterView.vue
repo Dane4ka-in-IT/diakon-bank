@@ -4,7 +4,7 @@
       <h1>Регистрация</h1>
       <form @submit.prevent="handleRegister">
         <div class="input-group">
-          <input type="text" v-model="fullName" placeholder="Введите ФИО" required />
+          <input type="text" v-model="fullName" placeholder="Введите имя пользователя" required />
         </div>
         <div class="input-group">
           <input type="text" v-model="username" placeholder="Введите e-mail или телефон" required />
@@ -128,7 +128,7 @@ input:focus {
 }
 
 .links a {
-  color: #6c757d;
+  color: #007bff;
   text-decoration: none;
 }
 

@@ -115,7 +115,7 @@ input:focus {
 }
 
 .links a {
-  color: #6c757d;
+  color: #007bff;
   text-decoration: none;
 }
 

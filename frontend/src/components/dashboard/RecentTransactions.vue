@@ -12,7 +12,7 @@
       {{ isExpanded ? 'Show less' : 'Show more' }}
     </button>
     <div v-else class="no-transactions">
-      <p>No recent transactions.</p>
+      <p>Не найдено последних операций.</p>
     </div>
   </div>
 </template>

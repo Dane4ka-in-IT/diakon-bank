@@ -3,7 +3,9 @@ package com.diakonbank.authservice.controller;
 import com.diakonbank.authservice.dto.request.ConnectBankRequest;
 import com.diakonbank.authservice.dto.request.LoginRequest;
 import com.diakonbank.authservice.dto.request.RegistrationRequest;
+import com.diakonbank.authservice.dto.request.SyncBankRequest;
 import com.diakonbank.authservice.dto.response.JwtResponse;
+import com.diakonbank.authservice.entity.User;
 import com.diakonbank.authservice.service.BankConnectionService;
 import com.diakonbank.authservice.service.UserService;
 import com.diakonbank.authservice.util.JwtUtil;
@@ -46,13 +48,20 @@ public class AuthController {
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest loginRequest) throws Exception {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-        final String token = jwtUtil.generateToken(userDetails);
+        final User user = userService.findByUsername(loginRequest.getUsername());
+        final String token = jwtUtil.generateToken(userDetails, user);
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
     @PostMapping("/connect-bank")
     public ResponseEntity<Void> connectBank(@RequestBody ConnectBankRequest connectBankRequest) {
         bankConnectionService.connectBank(connectBankRequest);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/sync-bank")
+    public ResponseEntity<Void> syncBank(@RequestBody SyncBankRequest syncBankRequest) {
+        bankConnectionService.syncBank(syncBankRequest);
         return ResponseEntity.accepted().build();
     }
 } 

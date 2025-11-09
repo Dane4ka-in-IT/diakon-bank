@@ -9,6 +9,16 @@ interface DecodedToken {
   // Add other claims like roles if they exist in your token
 }
 
+export interface ConnectBankPayload {
+  bankLogin: string;
+  bankPassword: string;
+  bank: string;
+}
+
+export interface SyncBankPayload {
+  bank: string;
+}
+
 export const authService = {
   async register(username: string, password: string): Promise<any> {
     const response = await authApi.post('/auth/register', { username, password });
@@ -34,5 +44,15 @@ export const authService = {
   logout() {
     const authStore = useAuthStore();
     authStore.logout();
+  },
+
+  async connectBank(payload: ConnectBankPayload): Promise<any> {
+    const response = await authApi.post('/auth/connect-bank', payload);
+    return response.data;
+  },
+
+  async syncBank(payload: SyncBankPayload): Promise<any> {
+    const response = await authApi.post('/auth/sync-bank', payload);
+    return response.data;
   }
 }; 

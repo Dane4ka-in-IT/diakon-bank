@@ -34,13 +34,13 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   const totalIncome = computed(() => {
     return transactions.value
-      .filter(t => t.transactionInformation.toLowerCase().includes('зарплата'))
+      .filter(t => t.transactionInformation.toLowerCase().includes('зарплата') || t.transactionInformation.toLowerCase().includes('доход'))
       .reduce((sum, t) => sum + t.amount, 0);
   });
 
   const totalExpenses = computed(() => {
     return transactions.value
-      .filter(t => !t.transactionInformation.toLowerCase().includes('зарплата'))
+      .filter(t => !t.transactionInformation.toLowerCase().includes('зарплата') && !t.transactionInformation.toLowerCase().includes('доход'))
       .reduce((sum, t) => sum + t.amount, 0);
   });
 

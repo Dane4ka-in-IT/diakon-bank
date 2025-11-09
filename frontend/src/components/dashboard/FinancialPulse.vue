@@ -1,11 +1,11 @@
 <template>
-  <button class="financial-pulse-button">
+  <router-link to="/financial-pulse" class="financial-pulse-button">
     Финансовый пульс
-  </button>
+  </router-link>
 </template>
 
 <script setup lang="ts">
-// This button would likely navigate to a dedicated analytics page or open a modal
+// This button now navigates to the dedicated analytics page.
 </script>
 
 <style scoped>
@@ -18,8 +18,9 @@
   width: 100%;
   font-size: 18px;
   font-weight: bold;
-  cursor: pointer;
   text-align: center;
+  text-decoration: none;
+  display: inline-block;
   box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
   transition: all 0.2s ease-in-out;
 }

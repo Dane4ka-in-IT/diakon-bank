@@ -8,13 +8,15 @@ import com.diakonbank.bankapi.service.repository.TransactionRepository;
 import com.diakonbank.bankapi.service.service.BankIntegrationService;
 import com.diakonbank.bankapi.service.mapper.AccountMapper;
 import com.diakonbank.bankapi.service.mapper.TransactionMapper;
-
+import com.diakonbank.bankapi.service.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -65,6 +67,11 @@ public class BankApiController {
     }
 
     private Long getCurrentUserId() {
-        return 1L;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal) {
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            return principal.getId();
+        }
+        throw new IllegalStateException("User not authenticated or principal is not of type UserPrincipal");
     }
 }

@@ -10,18 +10,23 @@
       </ul>
     </div>
     <div v-else class="no-accounts">
-      <p>No accounts found.</p>
+      <p>Не найдено счетов.</p>
     </div>
-    <button class="add-account-btn">+</button>
+    <button class="add-account-btn" @click="showModal = true">+</button>
   </div>
+  <ConnectBankModal :show="showModal" @close="showModal = false" />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { BankAccount } from '@/stores/dashboard';
+import ConnectBankModal from './ConnectBankModal.vue';
 
 defineProps<{
   accounts: BankAccount[];
 }>();
+
+const showModal = ref(false);
 
 const formatCurrency = (value: number, currency: string) => {
   return new Intl.NumberFormat('ru-RU', {
@@ -33,53 +38,61 @@ const formatCurrency = (value: number, currency: string) => {
 
 <style scoped>
 .my-accounts-card {
-  background-color: #3a3a4a;
-  border-radius: 15px;
-  padding: 20px;
-  color: white;
+  background-color: #2c2f48;
+  border-radius: 12px;
+  padding: 24px;
+  color: #e0e0e0;
   position: relative;
-  height: 400px; /* Example fixed height */
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-title {
   margin: 0 0 15px 0;
-  font-weight: normal;
+  font-weight: 500;
+  font-size: 1.2rem;
 }
 
 .accounts-list {
   flex-grow: 1;
-  overflow-y: auto; /* For when there are many accounts */
+  overflow-y: auto;
 }
 
 .accounts-list ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 .account-item {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #555;
+  padding: 12px 0;
+  border-bottom: 1px solid #4a4e69;
+}
+.account-item:last-child {
+  border-bottom: none;
 }
 .account-name {
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .add-account-btn {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background-color: #007bff;
   color: white;
   border: none;
-  font-size: 30px;
-  line-height: 50px;
+  font-size: 28px;
+  line-height: 44px;
   text-align: center;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.2s;
 }
 
 .add-account-btn:hover {
@@ -92,5 +105,6 @@ const formatCurrency = (value: number, currency: string) => {
   justify-content: center;
   align-items: center;
   color: #888;
+  height: 100%;
 }
 </style> 

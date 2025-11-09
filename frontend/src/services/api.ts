@@ -1,35 +1,43 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 
-const authApi = axios.create({
-  baseURL: 'https://lt.shruc.dev/auth/api/v1',
+// We can externalize these to .env variables if needed, e.g., VITE_AUTH_API_URL
+export const authApi = axios.create({
+    baseURL: 'https://lt.shruc.dev/auth/api/v1'
 });
 
-const bankApi = axios.create({
-  baseURL: 'https://lt.shruc.dev/bank/api/v1',
+authApi.interceptors.request.use(config => {
+    const authStore = useAuthStore();
+    const token = authStore.token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
 
-const pulseApi = axios.create({
-  baseURL: 'https://lt.shruc.dev/pulse/api/v1',
+export const bankApi = axios.create({
+    baseURL: 'https://lt.shruc.dev/bank/api/v1'
 });
 
-bankApi.interceptors.request.use((config) => {
-  const authStore = useAuthStore();
-  const token = authStore.token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+bankApi.interceptors.request.use(config => {
+    const authStore = useAuthStore();
+    const token = authStore.token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
 
-pulseApi.interceptors.request.use((config) => {
-  const authStore = useAuthStore();
-  const userId = authStore.user?.id; // Assuming user object has an id
-  if (userId) {
-    config.headers['X-User-Id'] = userId;
-  }
-  return config;
+export const pulseApi = axios.create({
+    baseURL: 'https://lt.shruc.dev/pulse/api/v1'
 });
 
-
-export { authApi, bankApi, pulseApi }; 
+pulseApi.interceptors.request.use(config => {
+    const authStore = useAuthStore();
+    const user = authStore.user;
+    if (user && user.id) {
+        config.headers['X-User-Id'] = user.id;
+    }
+    // If pulse endpoints become secured, we'll need to add the auth token here too.
+    return config;
+}); 

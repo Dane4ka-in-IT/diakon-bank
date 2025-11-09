@@ -1,6 +1,5 @@
-package com.diakonbank.authservice.util;
+package com.diakonbank.bankapi.service.util;
 
-import com.diakonbank.authservice.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,6 +36,10 @@ public class JwtUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public Long getUserIdFromToken(String token) {
+        return getClaimFromToken(token, claims -> claims.get("userId", Long.class));
+    }
+
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
@@ -57,12 +60,6 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
-    }
-
-    public String generateToken(UserDetails userDetails, User user) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
