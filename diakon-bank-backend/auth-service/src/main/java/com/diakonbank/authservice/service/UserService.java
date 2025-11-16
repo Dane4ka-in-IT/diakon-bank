@@ -2,6 +2,7 @@ package com.diakonbank.authservice.service;
 import com.diakonbank.authservice.dto.request.RegistrationRequest;
 import com.diakonbank.authservice.entity.Role;
 import com.diakonbank.authservice.entity.User;
+import com.diakonbank.authservice.exception.UserAlreadyExistsException;
 import com.diakonbank.authservice.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class UserService {
     }
     public User registerNewUser(RegistrationRequest registrationRequest) {
         if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
-            throw new RuntimeException("User already exists with username: " + registrationRequest.getUsername());
+            throw new UserAlreadyExistsException("User already exists with username: " + registrationRequest.getUsername());
         }
         User newUser = new User();
         newUser.setUsername(registrationRequest.getUsername());

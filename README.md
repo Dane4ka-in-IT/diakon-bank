@@ -10,6 +10,7 @@
 *   **Аналитика на базе ИИ:** Автоматическая категоризация транзакций, поиск забытых подписок и обнаружение аномалий.
 *   **Сканер безопасности банковских API:** Встроенный модуль для проверки безопасности подключенных банковских API.
 *   **Freemium-модель:** Понятная стратегия монетизации с бесплатным и премиальным тарифами.
+*   **Telegram-бот ассистент:** Управляйте своими финансами и получайте аналитику прямо в Telegram.
 
 ---
 
@@ -20,6 +21,7 @@
 | **Бэкенд**   | `Java 17`, `Spring Boot 3`, `PostgreSQL`, `RabbitMQ`    |
 | **Фронтенд** | `Vue.js 3`, `Vuetify`                                 |
 | **AI Сервис**| `Python 3.11`, `FastAPI`, `Transformers`              |
+| **Telegram-бот**| `Python 3.11`, `python-telegram-bot`, `SQLAlchemy` |
 | **DevOps**   | `Docker`, `Docker Compose`                            |
 
 ---
@@ -33,6 +35,7 @@
 > *   Java 17 (JDK)
 > *   Maven
 > *   Node.js (v18+)
+> *   Python 3.11+
 
 #### Шаг 1: Запуск базы данных
 
@@ -82,10 +85,39 @@ mvn spring-boot:run
     ```
 3.  Откройте приложение в браузере по адресу, который будет указан в консоли (обычно `http://localhost:5173`).
 
+#### Шаг 4: Запуск Telegram-бота
+
+1.  **Установите зависимости Python:**
+    Перейдите в директорию `telegram` и выполните команду для установки необходимых библиотек:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2.  **Создайте файл `.env`:**
+    *   В директории `telegram` создайте файл с именем `.env`.
+    *   Добавьте в него следующие переменные. `DATABASE_URL` уже настроен для подключения к базе данных из Docker.
+    ```env
+    DATABASE_URL=postgresql+asyncpg://postgres:secret@localhost:5432/bankdb
+    TELEGRAM_BOT_TOKEN=YOUR_TELEGRAM_BOT_TOKEN_HERE
+
+    # Опционально: для функции "Задать вопрос" нужен доступ к LLM
+    # LLM_API_BASE=
+    # LLM_API_KEY=
+    # LLM_MODEL=
+    ```
+    > Замените `YOUR_TELEGRAM_BOT_TOKEN_HERE` на ваш токен, полученный от [@BotFather](https://t.me/BotFather) в Telegram.
+
+3.  **Запустите бота:**
+    В директории `telegram` выполните:
+    ```bash
+    python main.py
+    ```
+    После этого ваш бот будет доступен в Telegram.
+
 ---
 
-### 🛠️ Полезные ссылки
+### ��️ Полезные ссылки
 
 *   **[Доска задач](https://app.striveapp.ru/spaces/43632/143089/tasks)**
 *   **[Дизайн в Figma](https://www.figma.com/design/MqpvfBNBLxMkNoIg9HQAHt/diakon-bank?node-id=0-1&t=wtnZY7mEgJGDtUns-1)**
 *   **[Финальная презентация на Яндекс.Диске](https://disk.yandex.ru/d/iKjX0q4sVfy8XQ)**
+
